@@ -11,16 +11,21 @@
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
+    "@heroicons/react": "^2.1.5",
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc",
     "clsx": "^2.1.1",
     "react": "19.0.0-rc-b8ae38f8-20241018",
     "react-dom": "19.0.0-rc-b8ae38f8-20241018",
     "react-router-dom": "^6.27.0",
     "tailwind-merge": "^2.5.4"
   },
+  "overrides": {
+    "@types/react": "npm:types-react@rc",
+    "@types/react-dom": "npm:types-react-dom@rc"
+  },
   "devDependencies": {
     "@eslint/js": "^9.11.1",
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
