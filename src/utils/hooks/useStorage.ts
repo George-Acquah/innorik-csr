@@ -1,33 +1,32 @@
 import { useState, useEffect } from "react";
 
 function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const persistedValue = window.localStorage.getItem(key);
-        return persistedValue !== null
-          ? JSON.parse(persistedValue)
-          : initialValue;
-      } catch (error) {
-        console.error("Error reading localStorage", error);
-        return initialValue;
-      }
+  const getStoredValue = (): T => {
+    if (typeof window === "undefined") return initialValue;
+
+    try {
+      const item = window.localStorage.getItem(key);
+      return item !== null
+        ? typeof initialValue === "string"
+          ? item
+          : JSON.parse(item)
+        : initialValue;
+    } catch (error) {
+      console.error("Error reading localStorage", error);
+      return initialValue;
     }
-    return initialValue;
-  });
+  };
+
+  const [storedValue, setStoredValue] = useState<T>(getStoredValue);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const item = window.localStorage.getItem(key);
-        if (item) {
-          setStoredValue(JSON.parse(item));
-        }
-      } catch (error) {
-        console.error("Error reading localStorage", error);
-      }
+    const item = window.localStorage.getItem(key);
+    if (item) {
+      setStoredValue(
+        typeof initialValue === "string" ? (item as T) : JSON.parse(item)
+      );
     }
-  }, [key]);
+  }, [initialValue, key]);
 
   const setValue = (value: T | ((val: T) => T)) => {
     try {
@@ -35,7 +34,12 @@ function useLocalStorage<T>(key: string, initialValue: T) {
         value instanceof Function ? value(storedValue) : value;
       setStoredValue(valueToStore);
       if (typeof window !== "undefined") {
-        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        window.localStorage.setItem(
+          key,
+          typeof initialValue === "string"
+            ? (valueToStore as string)
+            : JSON.stringify(valueToStore)
+        );
       }
     } catch (error) {
       console.error("Error setting localStorage", error);

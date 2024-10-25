@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { use, useState } from "react";
 import { Button } from "./button";
 import { cn } from "@/utils/classes.utils";
+import { ThemeContext } from "@/utils/contexts/theme.context";
 
 interface _ITooltip {
   items: _ITooltipItem[];
@@ -12,13 +13,9 @@ export const AnimatedTooltip = ({
   className = "-top-16 -left-1/2 translate-x-1/2",
 }: _ITooltip) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const { setTheme, systemTheme } = useTheme();
+  const { setTheme } = use(ThemeContext);
 
-  // Resolve the theme if "system" is selected
-  const resolvedTheme = (theme: string) =>
-    theme === "system" ? systemTheme : theme;
-
-  const renderIcon = (icon: any, name: string, themeProp?: string) => {
+  const renderIcon = (icon: IconType, name: string, themeProp?: Theme) => {
     const Icon = icon;
     return (
       <Button
@@ -28,7 +25,7 @@ export const AnimatedTooltip = ({
         className="px-2 py-2"
       >
         <Icon
-          onClick={() => setTheme(themeProp ?? "system")}
+          onClick={() => setTheme(themeProp ?? "system" )}
           className="object-cover !m-0 !p-0 object-top h-8 w-8 group-hover:scale-105 group-hover:z-30 relative transition duration-500"
         />
       </Button>
@@ -65,7 +62,7 @@ export const AnimatedTooltip = ({
           </div>
 
           {item.icon &&
-            renderIcon(item.icon, item.name, resolvedTheme(item.theme))}
+            renderIcon(item.icon, item.name, item.theme)}
         </div>
       ))}
     </>

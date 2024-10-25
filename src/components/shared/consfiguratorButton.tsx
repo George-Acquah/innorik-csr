@@ -1,9 +1,10 @@
-import { useConfigurator } from "@/utils/contexts/configurator.contexts";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { Button } from "../ui/button";
+import { use } from "react";
+import { ConfiguratorContext } from "@/utils/contexts/configurator.contexts";
 
 const ConfigurationButton = () => {
-  const { setOpenConfigurator } = useConfigurator();
+  const { setOpenConfigurator } = use(ConfiguratorContext);
   return (
     <div className="">
       <Button

@@ -1,7 +1,9 @@
 
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { cn } from "../../../utils";
-import { useConfigurator } from "@/utils/contexts/configurator.contexts";
+import { use } from "react";
+import { ConfiguratorContext } from "@/utils/contexts/configurator.contexts";
+import { sidenavColors } from "@/utils/constants/theme.constants";
 
 export const MobileSidebar = ({
   className,
@@ -12,7 +14,7 @@ export const MobileSidebar = ({
   const {
     setOpenSidenav,
     state: { openSidenav },
-  } = useConfigurator();
+  } = use(ConfiguratorContext);
   
 
   return (
@@ -58,13 +60,14 @@ export const DesktopSidebar = ({
 }: React.ComponentProps<"div">) => {
   const {
     setOpenSidenav,
-    state: { openSidenav, animateSidenav },
-  } = useConfigurator();
+    state: { openSidenav, animateSidenav, sidenavColor },
+  } = use(ConfiguratorContext);
 
+  console.log(sidenavColors[sidenavColor])
   return (
     <div
       className={cn(
-        "h-full px-4 py-4 hidden md:flex md:flex-col bg-neutral-100 dark:bg-neutral-800 flex-shrink-0 transition-all duration-300",
+        `h-full px-4 py-4 hidden md:flex md:flex-col bg-gradient-to-br ${sidenavColors[sidenavColor]} flex-shrink-0`,
         className,
         openSidenav ? "w-48" : "w-15"
       )}

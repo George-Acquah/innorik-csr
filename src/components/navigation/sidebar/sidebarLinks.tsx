@@ -1,7 +1,8 @@
 import { NavLink, NavLinkProps } from "react-router-dom";
 import { cn } from "../../../utils";
-import { Typography } from "@/components/ui/typography";
-import { useConfigurator } from "@/utils/contexts/configurator.contexts";
+import { use } from "react";
+import { ConfiguratorContext } from "@/utils/contexts/configurator.contexts";
+import { activeColors, sidenavTextColors, sidenavTexts } from "@/utils/constants/theme.constants";
 
 export const SidebarLink = ({
   link,
@@ -13,28 +14,41 @@ export const SidebarLink = ({
   props?: NavLinkProps;
 }) => {
   const {
-    state: { openSidenav },
-  } = useConfigurator();
+    state: { openSidenav, sidenavColor },
+  } = use(ConfiguratorContext);
 
   return (
     <NavLink
       to={link.href}
       aria-label={link.label}
-      className={({isActive, isPending, isTransitioning}) =>
-        cn("flex items-center justify-start gap-2 group/sidebar py-2 bg-white rounded-md px-2", isPending ? 'bg-green-500' : isActive ? 'bg-green-400/70' : isTransitioning ? '' : '', className)
+      className={({ isActive, isPending, isTransitioning }) =>
+        cn(
+          "flex items-center group/sidebar py-2 rounded-md px-2",
+          openSidenav
+            ? isPending
+              ? `bg-green-500 gap-2`
+              : isActive
+              ? `${activeColors[sidenavColor]} gap-2`
+              : isTransitioning
+              ? ""
+              : "bg-white dark:text-neutral-800 justify-start  gap-2"
+            : isActive
+            ? `${activeColors[sidenavColor]} ${sidenavTexts[sidenavColor]}`
+            : `${sidenavTextColors[sidenavColor]} justify-between hover:translate-x-1 transition duration-150 `,
+          className
+        )
       }
       {...props}
     >
       {link.icon}
-      <Typography
-        variant="span"
+      <span
         className={cn(
-          "text-neutral-700 dark:text-neutral-200 text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0 overflow-hidden",
+          "text-inherit text-sm group-hover/sidebar:translate-x-1 transition duration-150 whitespace-pre inline-block !p-0 !m-0 overflow-hidden",
           openSidenav ? "opacity-100 w-auto" : "opacity-0 w-0"
         )}
       >
         {link.label}
-      </Typography>
+      </span>
     </NavLink>
   );
 };

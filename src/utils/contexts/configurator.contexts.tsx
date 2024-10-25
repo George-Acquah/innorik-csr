@@ -1,7 +1,6 @@
 import React, {
   useReducer,
   useMemo,
-  useContext,
   useEffect,
   useCallback,
 } from "react";
@@ -68,21 +67,30 @@ interface _IConfiguratorContextType {
   setOpenConfigurator: (value: boolean) => void;
 }
 
-const ConfiguratorContext =
-  React.createContext<_IConfiguratorContextType | null>(null);
+export const ConfiguratorContext =
+  React.createContext<_IConfiguratorContextType>({
+      state: initialState,
+  setOpenSidenav: () => {},
+  setSidenavType:() => {},
+  setAnimateSidenav: () => {},
+  setSidenavColor:() => {},
+  setTransparentNavbar: () => {},
+  setFixedNavbar: () => {},
+  setOpenConfigurator: () => {},
+  });
 ConfiguratorContext.displayName = "ConfiguratorContext";
 
 const ConfiguratorProvider: React.FC<_IChildren> = ({ children }) => {
-  // const [configurationData, setConfigurationData] = useLocalStorage<State>(
-  //   "configurationData",
-  //   initialState
-  // );
+  const [configurationData, setConfigurationData] = useLocalStorage<State>(
+    "configurationData",
+    initialState
+  );
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, configurationData);
 
-  // useEffect(() => {
-  //   setConfigurationData(state);
-  // }, [state, setConfigurationData]);
+  useEffect(() => {
+    setConfigurationData(state);
+  }, [state, setConfigurationData]);
 
   const setOpenSidenav = useCallback(
     (value: boolean) => dispatch({ type: "OPEN_SIDENAV", value }),
@@ -137,20 +145,9 @@ const ConfiguratorProvider: React.FC<_IChildren> = ({ children }) => {
   );
 
   return (
-    <ConfiguratorContext.Provider value={value}>
+    <ConfiguratorContext value={value}>
       {children}
-    </ConfiguratorContext.Provider>
+    </ConfiguratorContext>
   );
 };
-
-export const useConfigurator = (): _IConfiguratorContextType => {
-  const context = useContext(ConfiguratorContext);
-  if (!context) {
-    throw new Error(
-      "useConfigurator must be used within a ConfiguratorProvider"
-    );
-  }
-  return context;
-};
-
 export default ConfiguratorProvider;

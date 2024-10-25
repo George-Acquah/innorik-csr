@@ -14,7 +14,11 @@ interface _ITooltipItem {
   name: string;
   designation?: string;
   icon?: IconType;
-  theme: string;
+  theme: Theme;
+}
+
+interface _Indexer {
+  [key: string]: string;
 }
 
 type IconType = ForwardRefExoticComponent<
@@ -27,3 +31,5 @@ type IconType = ForwardRefExoticComponent<
 type _TVariants = "default" | "secondary" | "destructive" | "outline";
 
 type _TSizes = "default" | "lg" | "sm" | "icon";
+
+type Theme = "light" | "dark" | "system";

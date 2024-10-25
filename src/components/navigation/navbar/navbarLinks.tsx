@@ -18,11 +18,11 @@ export const NavbarLinks = ({
       aria-label={link.label}
       className={({ isActive, isPending, isTransitioning }) =>
         cn(
-          "flex items-center justify-start gap-2 group/navbar py-2 bg-white px-2",
+          "flex items-center justify-start rounded-full gap-2 group/navbar py-2 bg-transparent px-4 transition-all duration-100 dark:text-neutral-300",
           isPending
             ? "bg-green-500"
             : isActive
-            ? "bg-green-400/70"
+            ? "bg-green-400/70 text-white dark:text-white"
             : isTransitioning
             ? ""
             : "",
@@ -34,8 +34,9 @@ export const NavbarLinks = ({
       {link.icon}
       <Typography
         variant="span"
+        color="default"
         className={cn(
-          "text-neutral-700 dark:text-neutral-200 text-sm group-hover/navbar:translate-x-1 transition duration-150 whitespace-pre inline-block"
+          "text-inherit  text-sm group-hover/navbar:translate-x-1 transition duration-150 whitespace-pre inline-block"
         )}
       >
         {link.label}

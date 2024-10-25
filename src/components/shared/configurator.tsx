@@ -1,45 +1,33 @@
-"use client";
-import React, { useRef } from "react";
+import { use, useRef } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "@/utils/hooks/useOutsideClick";
-import { useConfigurator } from "@/utils/contexts/configurator.contexts";
 import { Button } from "../ui/button";
 import { Switch } from "../ui/switch";
 import { Typography } from "../ui/typography";
 import { AnimatedTooltip } from "../ui/tooltip";
 import { themesTypeData } from "@/data";
-
-interface _Indexer {
-  [key: string]: string;
-}
+import { ConfiguratorContext } from "@/utils/contexts/configurator.contexts";
+import { sidenavColors } from "@/utils/constants/theme.constants";
 
 function Configurator() {
   const {
-    state,
+    state: {
+      openConfigurator,
+      sidenavColor,
+      sidenavType,
+      animateSidenav,
+      openSidenav,
+      fixedNavbar
+    },
     setOpenConfigurator,
     setSidenavColor,
     setSidenavType,
     setAnimateSidenav,
     setOpenSidenav,
-  } = useConfigurator();
-  const {
-    openConfigurator,
-    sidenavColor,
-    sidenavType,
-    animateSidenav,
-    openSidenav,
-  } = state;
+    setFixedNavbar
+  } = use(ConfiguratorContext);
   const configuratorRef = useRef(null);
   useOutsideClick(configuratorRef, () => setOpenConfigurator(false));
-
-  const sidenavColors: _Indexer = {
-    white: "from-gray-100 to-gray-100 border-gray-200",
-    dark: "from-black to-black border-gray-200",
-    green: "from-green-400 to-green-600",
-    orange: "from-orange-400 to-orange-600",
-    red: "from-red-400 to-red-600",
-    pink: "from-pink-400 to-pink-600",
-  };
 
   return (
     <div className="">
@@ -70,18 +58,18 @@ function Configurator() {
           </Button>
         </div>
         <div className="py-4 px-6">
-          <div className="mb-12">
+          <div className="mb-6">
             <Typography variant="h4">Sidenav Colors</Typography>
             <div className="mt-3 flex items-center gap-2">
               {Object.keys(sidenavColors).map((color) => (
                 <Typography
                   variant="span"
                   key={color}
-                  className={`h-6 w-6 cursor-pointer rounded-full border bg-gradient-to-br transition-transform hover:scale-105 ${
+                  className={`h-6 w-6 cursor-pointer rounded-full border-2 bg-gradient-to-br transition-transform hover:scale-105 ${
                     sidenavColors[color]
                   } ${
                     sidenavColor === color
-                      ? "border-black"
+                      ? `border-neutral-500 dark:border-black `
                       : "border-transparent"
                   }`}
                   onClick={() => setSidenavColor(color)}
@@ -89,8 +77,30 @@ function Configurator() {
               ))}
             </div>
           </div>
-          {/* <div className="mb-12">
-            <Typography variant="h4">Sidenav Types</Typography>
+          <div>
+            <div className="h-[1px] bg-neutral-200 dark:bg-neutral-600" />
+            <div className="flex items-center justify-between py-3">
+              <Typography variant="h5">Fixed Navbar</Typography>
+              <Switch
+                aria-label="Fixed Navbar"
+                id="fixed-navbar"
+                className={`${
+                  fixedNavbar
+                    ? ""
+                    : "hover:bg-secondary dark:hover:bg-secondary-dark dark:hover:bg-opacity-30 hover:bg-opacity-20"
+                }`}
+                checked={fixedNavbar}
+                onSwitchToggle={() => {
+                  setFixedNavbar(!fixedNavbar)
+                }}
+              />
+            </div>
+          </div>
+          <div className="mb-12">
+            <div className="h-[1px] bg-neutral-200 dark:bg-neutral-600" />
+            <Typography variant="h4" className="mt-4">
+              Sidenav Types
+            </Typography>
             <Typography variant="p" color="secondary">
               Choose between 3 different sidenav types.
             </Typography>
@@ -120,7 +130,7 @@ function Configurator() {
                 White
               </Button>
             </div>
-          </div> */}
+          </div>
           <div className="mb-12">
             <div className="h-[1px] bg-neutral-200 dark:bg-neutral-600" />
             <Typography variant="h4" className="mt-4">
@@ -137,7 +147,7 @@ function Configurator() {
                 className={`${
                   !animateSidenav && openSidenav
                     ? ""
-                    : "hover:bg-secondary hover:bg-opacity-20"
+                    : "hover:bg-secondary dark:hover:bg-secondary-dark dark:hover:bg-opacity-30 hover:bg-opacity-20"
                 }`}
                 checked={!animateSidenav && openSidenav}
                 onSwitchToggle={() => {
@@ -154,7 +164,7 @@ function Configurator() {
                 className={`${
                   !animateSidenav && !openSidenav
                     ? ""
-                    : "hover:bg-secondary hover:bg-opacity-20"
+                    : "hover:bg-secondary dark:hover:bg-secondary-dark dark:hover:bg-opacity-30 hover:bg-opacity-20"
                 }`}
                 checked={!animateSidenav && !openSidenav}
                 onSwitchToggle={() => {
@@ -170,7 +180,7 @@ function Configurator() {
                 id="default-sidebar"
                 checked={animateSidenav}
                 className={`${
-                  animateSidenav ? "" : "hover:bg-secondary hover:bg-opacity-20"
+                  animateSidenav ? "" : "hover:bg-secondary dark:hover:bg-secondary-dark dark:hover:bg-opacity-30 hover:bg-opacity-20"
                 }`}
                 onSwitchToggle={() => {
                   setAnimateSidenav(true);
@@ -189,24 +199,6 @@ function Configurator() {
                   Free Download
                 </Button>
               </a>
-              {/* <a
-              href="https://www.material-tailwind.com/docs/react/installation?rel=mtdr"
-              target="_black"
-              aria-label="View Documentation"
-            >
-              <Button variant="default" size="default" className="w-full">
-                View Documentation
-              </Button>
-            </a> */}
-              {/* <a
-              href="https://www.material-tailwind.com/blocks/react?rel=mtdr"
-              target="_black"
-              aria-label="Go Pro"
-            >
-              <Button variant="outline" size="default" className="w-full">
-                Material Tailwind PRO
-              </Button>
-            </a> */}
             </div>
           </div>
           <div className="flex justify-center items-center gap-8">
